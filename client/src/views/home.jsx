@@ -16,22 +16,24 @@ const Home = () => {
     return ( 
         <div>
             <Grid container sx={{display:'grid',placeContent:'center'}}>
-                <Grid item sx={{display:'flex',justifyContent:'center' ,flexDirection:'column'}}>
-                <TextField
-                   label="Notes"
-                   value={note}
-                   onChange={handleNote}
-                   required
-                   color='secondary'
-                   sx={{marginBottom:5,width:350}}
-                />
-                <TextField
-                  label="Details"
-                  value={details}
-                  onChange={handleDetails}
-                  required
-                   sx={{marginBottom:5,width:350}}
-                />
+                <Grid item >
+                 <form >
+                    <TextField
+                      label="Notes"
+                      value={note}
+                      onChange={handleNote}
+                      required
+                      color='secondary'
+                      sx={{marginBottom:5,width:350}}
+                   />
+                   <TextField
+                     label="Details"
+                     value={details}
+                     onChange={handleDetails}
+                     required
+                      sx={{marginBottom:5,width:350}}
+                   />
+                 </form>
                 </Grid>
             </Grid>
             <EditModal/>
