@@ -1,13 +1,10 @@
-import{BrowserRouter as Switch, Routes, Route} from 'react-router-dom';
+import Home from "./views/home";
 
 function App() {
   return (
     <div className="App">
-      <Switch>
-        <Routes>
-          <Route/>
-        </Routes>
-      </Switch>
+      <h3>Notes App</h3>
+      <Home/>
     </div>
   );
 }
