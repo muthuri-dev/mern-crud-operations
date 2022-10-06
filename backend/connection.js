@@ -3,7 +3,7 @@ const cors=require('cors');
 const mongoose=require('mongoose');
 const multer= require('multer');
 const bodyParser= require('body-parser');
-const { application } = require('express');
+const { application, response } = require('express');
 const PORT=8000;
 
 //initializing express
@@ -15,6 +15,9 @@ app.use(cors());
 
 //mongodb url
 const mogoURL='mongodb://0.0.0.0/todo';
+
+//database schema
+const notes= require('./models/schema');
 
 //connectiong to the server and database
 mongoose.connect(mogoURL)
@@ -33,3 +36,46 @@ mongoose.connect(mogoURL)
 
 //Application Routes
 
+app.post('/notes',function(req,res){
+    const newNote=new notes({
+        note:req.body.note,
+        details:req.body.details
+    });
+    newNote.save(
+        function(err){
+            if(!err){
+                console.log({newNote});
+            }else{
+                console.log('post err: ',err);
+            }
+        }
+    )
+});
+
+//getting the notes from the database
+app.get('/notes',function(req,res){
+    notes.find({}).sort({date:-1}).then(function(response){
+        res.json({data:response});
+    }).catch(function(err){
+        console.log(err);
+    });
+});
+
+//updating the note and the details in the database
+app.patch('/notes/:id',function(req,res){
+    const id=req.params._id;
+    console.log(id);
+});
+
+
+//deleting a note from the database
+
+app.delete('/notes/:id',async function(req,res){
+   try{
+    const id=req.params.id;
+    notes.findByIdAndDelete(id)
+   }catch(error){
+    res.status(500).send(error.message);
+   }
+
+});

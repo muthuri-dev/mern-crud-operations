@@ -1,42 +1,96 @@
-import { Grid } from '@mui/material';
-import TextField from '@mui/material/TextField'
-import { useState } from 'react';
-import EditModal from '../components/edit.modal';
+import { Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField, Typography } from '@mui/material';
+import AddModal from '../components/add.modal';
+import { useState,useEffect } from 'react';
+import axios from 'axios';
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Home = () => {
+    const[notes,setNotes]= useState('');
     const[note,setNote]=useState('');
-    const[details, setDetails]=useState('');
+    const[detail, setDetail]=('');
+    const [editModal, setEditModal]=useState(false);
 
     const handleNote=function(e){
         setNote(e.target.value);
     }
-    const handleDetails= function(e){
-        setDetails(e.target.value);
+    const handleDetail=function(e){
+        setDetail(e.target.value);
     }
+    const handleEdit= function(){
+        setEditModal(true);
+    }
+    const handleEdits= function(){
+        setEditModal(false);
+    }
+    const handleDelete= function(e,id){
+        e.preventdefault();
+        axios.delete(`http://localhost:8000/notes/${id}`)
+    }
+
+    useEffect(function(){
+        axios.get('http://localhost:8000/notes/')
+        .then(function(response){
+            setNotes(response.data.data);
+            console.log(response.data.data);
+        })
+        .catch(function(err){
+            console.log(err);
+        });
+    },[]);
+    
     return ( 
         <div>
-            <Grid container sx={{display:'grid',placeContent:'center'}}>
-                <Grid item >
-                 <form >
-                    <TextField
-                      label="Notes"
-                      value={note}
-                      onChange={handleNote}
-                      required
-                      color='secondary'
-                      sx={{marginBottom:5,width:350}}
-                   />
-                   <TextField
-                     label="Details"
-                     value={details}
-                     onChange={handleDetails}
-                     required
-                      sx={{marginBottom:5,width:350}}
-                   />
-                 </form>
+            <Grid container direction='column' sx={{dispay:'flex',alignItems:'center'}}>
+                <Grid item container direction='row' sx={{alignItems:'center'}} >
+                 {notes  && notes.map((note)=>(
+                    <Card elevation={5} sx={{height:200,width:300,margin:5 }} key={note.id}>
+                        <CardHeader 
+                        title={note.note}
+                        action={
+                        <IconButton>
+                            <DeleteIcon onClick={handleDelete}/>
+                        </IconButton>
+                       }
+                        />
+                        <CardContent>
+                            <Typography color='secondary'>{note.details}</Typography>
+                        </CardContent>
+                        <CardActions color='secondary'sx={{alignItems:'end'}}>
+                            <Button onClick={handleEdit} variant='outlined'color='secondary'>EDIT</Button>
+                        </CardActions>
+                    </Card>
+                 ))}
+                 {!notes && <Typography>Data Loading...</Typography>}
                 </Grid>
             </Grid>
-            <EditModal/>
+            <AddModal/>
+
+            <Dialog open={editModal}>
+                <DialogTitle sx={{fontFamily:'monospace',display:'flex',justifyContent:'center'}} >
+                    <Typography sx={{fontFamily:'monospace'}}>Edit</Typography>
+                </DialogTitle>
+                <DialogContent sx={{textAlign:'center'}}>
+                        <TextField 
+                        color='success'
+                        label='note'
+                        value={note}
+                        onChange={handleNote}
+                        sx={{marginTop:2,marginBottom:3,width:300}}
+                        type='text'
+                        />
+                        <TextField 
+                        color='success'
+                        label='details'
+                        value={detail}
+                        onChange={handleDetail}
+                        sx={{marginTop:2,marginBottom:3,width:300}}
+                        type='text'
+                        /> 
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleEdits}variant='contained'color='success'>SUBMIT</Button>
+                </DialogActions>
+            </Dialog>
         </div>
      );
 }
