@@ -64,7 +64,10 @@ app.get('/notes',function(req,res){
 //updating the note and the details in the database
 app.patch('/notes/:id',function(req,res){
     const id=req.params._id;
-    console.log(id);
+    notes.findByIdAndUpdate({_id:id},req.body)
+    .then(function(){
+        console.log('Updated');
+    })
 });
 
 
@@ -73,7 +76,7 @@ app.patch('/notes/:id',function(req,res){
 app.delete('/notes/:id',async function(req,res){
    try{
     const id=req.params.id;
-    notes.findByIdAndDelete(id)
+    notes.findByIdAndDelete({_id:id})
    }catch(error){
     res.status(500).send(error.message);
    }

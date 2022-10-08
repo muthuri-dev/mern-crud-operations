@@ -19,12 +19,16 @@ const Home = () => {
     const handleEdit= function(){
         setEditModal(true);
     }
-    const handleEdits= function(){
+    const handleEdits= function(id){
         setEditModal(false);
+        axios.put(`http://localhost:8000/notes/${id}`)
     }
     const handleDelete= function(e,id){
         e.preventdefault();
         axios.delete(`http://localhost:8000/notes/${id}`)
+        .then(function(response){
+            console.log('delete');
+        })
     }
 
     useEffect(function(){
