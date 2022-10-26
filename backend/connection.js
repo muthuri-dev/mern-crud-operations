@@ -74,11 +74,15 @@ app.patch('/notes/:id',function(req,res){
 //deleting a note from the database
 
 app.delete('/notes/:id',async function(req,res){
-   try{
-    const id=req.params.id;
-    notes.findByIdAndDelete({_id:id})
-   }catch(error){
-    res.status(500).send(error.message);
-   }
-
+   const id= req.params.id;
+   notes.findByIdAndRemove(id,(err)=>{
+    if(!err){
+        console.log('deleted');
+        res.json({
+            mess:"deleted"
+        });
+    }else{
+        console.log(err)
+    }
+   })
 });

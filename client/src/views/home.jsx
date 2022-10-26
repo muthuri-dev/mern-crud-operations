@@ -23,12 +23,17 @@ const Home = () => {
         setEditModal(false);
         axios.put(`http://localhost:8000/notes/${id}`)
     }
-    const handleDelete= function(e,id){
-        e.preventdefault();
+    const handleDelete= function(id){
+        //alert(id);
         axios.delete(`http://localhost:8000/notes/${id}`)
         .then(function(response){
-            console.log('delete');
+            if(response.status===200){
+                console.log('deleted');
+            }
         })
+        .catch((error)=>{
+            console.log(error);
+        });
     }
 
     useEffect(function(){
@@ -52,7 +57,7 @@ const Home = () => {
                         title={note.note}
                         action={
                         <IconButton>
-                            <DeleteIcon onClick={handleDelete}/>
+                            <DeleteIcon onClick={()=>handleDelete(note._id)}/>
                         </IconButton>
                        }
                         />
